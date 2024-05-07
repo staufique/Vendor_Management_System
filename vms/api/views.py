@@ -87,27 +87,57 @@ class AcknowledgeView(APIView):
             if id is None:
                 return JsonResponse("order not found",saf=False)
             po_id.acknowledgement_date = timezone.now()
-            v = Vendor.objects.filter(id=4).first()
+            # v = Vendor.objects.filter(id=po_id.vendor).first()
             serializer = PurchaseOrderSerializer(po_id,data=po_id)
             po_id.save()
-            print("***********************",po_id.acknowledgement_date)
-            str1 = str(po_id.acknowledgement_date - po_id.issue_date).split(":")
-            print("******************** date in str",str1)
-            for i in range(len(str1)):
-                if i==0:
-                    str1[i]=int(str1[i])*3600
-                elif i==1:
-                    str1[i]=int(str1[i])*60
-                elif i==2:
-                    str1[i]=int(str1[i][:2])
-            str2 = sum(str1)
-            print("**********************",str2)
-            print("************************",str1)
-            v.average_response_time = float(str2)
-            print("***************",v.average_response_time)
-            v.save()
+            # str1 = str(po_id.acknowledgement_date - po_id.issue_date).split(":")
+            # for i in range(len(str1)):
+            #     if i==0:
+            #         str1[i]=int(str1[i])*3600
+            #     elif i==1:
+            #         str1[i]=int(str1[i])*60
+            #     elif i==2:
+            #         str1[i]=int(str1[i][:2])
+            # str2 = sum(str1)
+            # v.average_response_time = float(str2)
+            # v.save()
             serializer = PurchaseOrderSerializer(po_id)
             return JsonResponse(serializer.data)
         
         return JsonResponse("order not found",safe=False)
 
+
+class CheckRatings(APIView):
+    def get(self,request):
+
+        data = PurchaseOrder.objects.filter(vendor=4).all()
+        a=[]
+        for i in data:
+            if i.acknowledgement_date is None:
+                continue
+            a += [str(i.acknowledgement_date - i.issue_date).split(":")]
+        a = [int(a[i][0])*3600 + int(a[i][1])*60 + int(float(a[i][2])) for i in range(len(a))]
+        print("*********************",a)
+        avg = sum(a)/len(a)
+        print("************************",avg)
+        serializer = PurchaseOrderSerializer(data,many=True)
+        return JsonResponse(serializer.data,safe=False)
+
+class DeliverView(APIView):
+
+    def get(self,request,id,status):
+        if status=="delivered":
+            data = PurchaseOrder.objects.filter(id=id).first()
+            if data.acknowledgement_date is None:
+                return JsonResponse({'masg':"first acknowledged the order"})
+            data.status = status
+            data.save()
+            serializer = PurchaseOrderSerializer(data)
+            return JsonResponse(serializer.data)
+        elif status=="cancelled":
+            data = PurchaseOrder.objects.filter(id=id).first()
+            data.status = status
+            data.save()
+            serializer = PurchaseOrderSerializer(data)
+            return JsonResponse(serializer.data)
+        return JsonResponse("something went wrong",safe=False)
