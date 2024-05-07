@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Purchase Order Notification</title>
+</head>
+<body>
+    <p>Dear {{ purchase_order.vendor.name }},</p>
+    <p>A new purchase order ({{ purchase_order.po_number }}) has been created.</p>
+    <p>Please acknowledge the purchase order as soon as possible.</p>
+    <a href="localhost:8000/api/purchase_orders/{{purchase_order.id}}/acknowledge">click here to acknowledge</a>
+    <p>Thank you.</p>
+</body>
+</html>
