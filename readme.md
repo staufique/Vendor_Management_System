@@ -3,7 +3,7 @@
 This document outlines the API endpoints available in the system along with their functionalities and usage instructions.
 
 ## Table of Contents
-0 . [Introduction](#Introduction)
+[Introduction](#Introduction)
 1. [User Authentication](#1-user-authentication)
    - [1.1. User Signup](#11-user-signup)
    - [1.2. User Login](#12-user-login)
@@ -42,6 +42,7 @@ Brief Introduction of project
 - **Method:** `POST`
 - **Description:** Allows users to register by providing necessary information.
 - **Parameters:**
+  - `username` (string, required): Username of the user.
   - `email` (string, required): Email address of the user.
   - `password` (string, required): Password for the user account.
 - **Response:**
