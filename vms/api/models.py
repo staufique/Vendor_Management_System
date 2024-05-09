@@ -15,7 +15,7 @@ from django.db.models import Avg, F, ExpressionWrapper, fields
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
-
+from django.contrib.auth import get_user_model
 
 class Vendor(models.Model):
     name = models.CharField(max_length=150)
@@ -88,6 +88,22 @@ def notify_vendor(sender, instance, created, **kwargs):
         email = EmailMessage(subject, html_content, from_email, [to_email])
         email.content_subtype = 'html'  # Set email content type as HTML
 
+        # Send email
+        email.send()
+
+@receiver(post_save, sender=PurchaseOrder)
+def notify_to_vendor_for_status_updating(sender, instance, **kwargs):
+    vendor = instance.vendor
+    purchase_orders = PurchaseOrder.objects.filter(vendor=vendor, po_number=instance.po_number,acknowledgement_date__isnull=False)
+    if purchase_orders.exists():
+        subject = 'Update Purchase Order'
+        html_content = render_to_string('update_order_status.html', {'purchase_order': instance})
+        from_email = 'programswar@gmail.com'  # Use your own email address
+        to_email = instance.vendor.email  # Assuming contact_details contain the vendor's email address
+
+        # Create EmailMessage object
+        email = EmailMessage(subject, html_content, from_email, [to_email])
+        email.content_subtype = 'html'  # Set email content type as HTML
         # Send email
         email.send()
 

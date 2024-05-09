@@ -17,6 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken 
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.hashers import make_password, check_password
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -29,8 +30,12 @@ class UserSignupView(APIView):
     def get(self,requuest):
         return Response("Signup Page")
     def post(self,request, *args, **kwargs):
+
         serializer = UserSigunUpSerializer(data=request.data)
         if serializer.is_valid():
+            password = serializer.validated_data.get('password')
+            hashed_password = make_password(password)
+            serializer.validated_data['password'] = hashed_password
             serializer.save()
             response = Response({'msg':'Register Successful'},status=status.HTTP_201_CREATED)
             return response
@@ -46,15 +51,15 @@ class UserLoginView(APIView):
         if serializer.is_valid(raise_exception=True):
             email = serializer.data.get('email')
             password = serializer.data.get('password')
-            user = User.objects.filter(email=email, password=password).first()
-            if user is not None:
+            user = User.objects.filter(email=email).first()
+            if user is not None and check_password(password, user.password):
                 token = get_tokens_for_user(user)
                 response = JsonResponse({"token": token, "msg": "login success"}, status=status.HTTP_200_OK)
                 response.set_cookie('access', str(token['access']))  
-                response.set_cookie('refresh', str(token['refresh'])) 
+                response.set_cookie('refresh', str(token['refresh']))
+                response.set_cookie('email',str(email)) 
                 return response
             return Response({"errors": {"validation_errors": ['password and email are not valid']}}, status=status.HTTP_404_NOT_FOUND)
-
 
 class CustomTokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
@@ -114,7 +119,6 @@ class VendorView(APIView):
     def put(self,request,id):
         if not request.user.is_superuser:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-
         if id:
             data = Vendor.objects.filter(id=id).first()
             serializer = VendorSerializer(data,data=request.data)
@@ -173,6 +177,7 @@ class PurchaseOrderView(APIView):
         return JsonResponse("data deleted",safe=False)
     
 class AcknowledgeView(APIView):
+
     def get(self,request,id=None):
         if id:
             po_id = PurchaseOrder.objects.filter(id=id).first()
@@ -207,6 +212,9 @@ class DeliverView(APIView):
     
 
 class VendorPerformanceView(APIView):
+    authentication_classes = [CustomTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, vendor_id, date=None):
         vendor = Vendor.objects.filter(id=vendor_id).first()
         if vendor is None:

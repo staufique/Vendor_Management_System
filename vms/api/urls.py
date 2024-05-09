@@ -10,8 +10,7 @@ urlpatterns = [
     path('purchase_orders/',PurchaseOrderView.as_view(),name='purchase_order'),
     path('purchase_orders/<int:id>/',PurchaseOrderView.as_view(),name='purchase_order_retrive'),
     path('purchase_orders/<int:id>/acknowledge/',AcknowledgeView.as_view(),name='purchase_order_acknowledge'),
-    # path('ratings/',CheckRatings.as_view()),
-    path('deliver/<int:id>/<str:status>/',DeliverView.as_view(),name='deliver_status'),
+    path('status/<int:id>/<str:status>/',DeliverView.as_view(),name='deliver_status'),
     path('vendors/<int:vendor_id>/performance/', VendorPerformanceView.as_view(), name='vendor_performance'),
     path('vendors/<int:vendor_id>/performance/<str:date>/', VendorPerformanceView.as_view(), name='vendor_performance_with_date'),
 ]

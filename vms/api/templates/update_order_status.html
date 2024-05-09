@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <p>Dear {{ purchase_order.vendor.name }},</p>
+    <p>Please update the status for ({{ purchase_order.po_number }}) has been created.</p>
+    <p>
+        here is the list of the items
+    </p>
+    <div>
+        <table border="1">
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+            </tr>
+            {% for key, value in purchase_order.items.items %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p>If Order has been placed click on this link.</p>
+    <a href="http://localhost:8000/api/staus/{{purchase_order.id}}/delivered/">click here to update order as Delivered</a>
+
+    <p>If You want to cancell the order click on this link.</p>
+    <a href="http://localhost:8000/api/status/{{purchase_order.id}}/cancelled/">click here to update order as Cancelled</a>
+    <p>Thank you.</p>
+</body>
+</html>

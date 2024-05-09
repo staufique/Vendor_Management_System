@@ -25,8 +25,8 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
         fields = ['vendor','items','quality_rating']
 
     def validate_quality_rating(self, value):
-        if value >= 5.0 or value <= 0.0:
-            raise serializers.ValidationError("quality rating must be greater than or equal to 0 or less than or equal to 5.0")
+        if value > 5.0 or value < 0.0:
+            raise serializers.ValidationError("quality rating must be greater than 0 or less than or equal to 5")
         return value
     
     def __init__(self, *args, **kwargs):
