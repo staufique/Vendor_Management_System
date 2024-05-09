@@ -13,6 +13,9 @@ import json
 from django.core.mail import EmailMessage
 from django.db.models import Avg, F, ExpressionWrapper, fields
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
+
 
 class Vendor(models.Model):
     name = models.CharField(max_length=150)
@@ -56,6 +59,8 @@ class HistoricalPerformance(models.Model):
     average_response_time = models.FloatField(null=True)
     fullfillment_rate = models.FloatField(null=True)
 
+    def __str__(self):
+        return f"{self.vendor} - {self.date}"
 
 @receiver(pre_save, sender=PurchaseOrder)
 def generate_po_number(sender, instance, **kwargs):
@@ -91,10 +96,13 @@ def update_vendor_average_time_rate(sender, instance, **kwargs):
     vendor = instance.vendor
     purchase_orders = PurchaseOrder.objects.filter(vendor=vendor, acknowledgement_date__isnull=False)
     if purchase_orders.exists():
+        #calculating average response time
         avg_expression = ExpressionWrapper(Avg(F('acknowledgement_date') - F('issue_date')), output_field=fields.DurationField())
         average_time_rate = purchase_orders.aggregate(average_time_rate=avg_expression)['average_time_rate']
         avg_res_time = str(average_time_rate).split(":")
         avg_res_time = int(avg_res_time[0])*3600 + int(avg_res_time[1])*60 + int(avg_res_time[2][0:2])
+
+        #calculating on time delivery
         total_delivered_orders = PurchaseOrder.objects.filter(vendor=vendor, status='delivered').count()
         on_time_delivered_orders = PurchaseOrder.objects.filter(vendor=vendor, status='delivered', acknowledgement_date__isnull=False).count()
         on_time_delivery_rate = (on_time_delivered_orders / total_delivered_orders) * 100 if total_delivered_orders != 0 else 0
@@ -113,4 +121,13 @@ def update_vendor_average_time_rate(sender, instance, **kwargs):
         vendor.quality_rating_avg = quality_rating_avg
         vendor.fullfillment_rate = fulfillment_rate
         vendor.save()
+
+         # Create or update HistoricalPerformance record
+        HistoricalPerformance.objects.create(
+            vendor=vendor,
+            on_time_delivery_rate=on_time_delivery_rate,
+            quality_rating_rate=quality_rating_avg,
+            average_response_time=avg_res_time,
+            fullfillment_rate=fulfillment_rate
+        )
 
