@@ -119,14 +119,16 @@ class VendorView(APIView):
     def put(self,request,id):
         if not request.user.is_superuser:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-        if id:
-            data = Vendor.objects.filter(id=id).first()
-            serializer = VendorSerializer(data,data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data,safe=True)
-            return JsonResponse("inside",safe=False)
-        return JsonResponse("wrong",safe=False)
+        try:
+            vendor = Vendor.objects.get(id=id)
+        except Vendor.DoesNotExist:
+            return JsonResponse({"error": "Purchase order not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = VendorSerializer(vendor, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
        
     def delete(self,request,id=None):
 
@@ -159,15 +161,17 @@ class PurchaseOrderView(APIView):
             return JsonResponse(serializer.data,safe=False)
         return JsonResponse(serializer.errors)
     
-    def put(self,request,id):
-        if id:
-            data = PurchaseOrder.objects.filter(id=id).first()
-            serializer = PurchaseOrderSerializer(data,data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data,safe=True)
-            return JsonResponse("inside",safe=False)
-        return JsonResponse("wrong",safe=False)
+    def put(self, request, id):
+        try:
+            purchase_order = PurchaseOrder.objects.get(id=id)
+        except PurchaseOrder.DoesNotExist:
+            return JsonResponse({"error": "Purchase order not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PurchaseOrderSerializer(purchase_order, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
        
     def delete(self,request,id=None):
         data = PurchaseOrder.objects.filter(id=id).first()
