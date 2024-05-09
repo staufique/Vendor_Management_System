@@ -1,133 +1,197 @@
-# Project Name
+# API Endpoints README
 
-Brief description of the project.
+This document outlines the API endpoints available in the system along with their functionalities and usage instructions.
 
 ## Table of Contents
+0 . [Introduction](#Introduction)
+1. [User Authentication](#1-user-authentication)
+   - [1.1. User Signup](#11-user-signup)
+   - [1.2. User Login](#12-user-login)
+   - [1.3. User Logout](#13-user-logout)
+2. [Vendor Management](#2-vendor-management)
+   - [2.1. Retrieve All Vendors](#21-retrieve-all-vendors)
+   - [2.2. Retrieve a Specific Vendor](#22-retrieve-a-specific-vendor)
+   - [2.3. Create a New Vendor](#23-create-a-new-vendor)
+   - [2.4. Update a Vendor](#24-update-a-vendor)
+   - [2.5. Delete a Vendor](#25-delete-a-vendor)
+3. [Purchase Order Management](#3-purchase-order-management)
+   - [3.1. Retrieve All Purchase Orders](#31-retrieve-all-purchase-orders)
+   - [3.2. Retrieve a Specific Purchase Order](#32-retrieve-a-specific-purchase-order)
+   - [3.3. Create a New Purchase Order](#33-create-a-new-purchase-order)
+   - [3.4. Update a Purchase Order](#34-update-a-purchase-order)
+   - [3.5. Delete a Purchase Order](#35-delete-a-purchase-order)
+   - [3.6. Acknowledge a Purchase Order](#36-acknowledge-a-purchase-order)
+   - [3.7. Update Delivery Status](#37-update-delivery-status)
+4. [Vendor Performance](#4-vendor-performance)
+   - [4.1. Retrieve Vendor Performance](#41-retrieve-vendor-performance)
+   - [4.2. Retrieve Vendor Performance for a Specific Date](#42-retrieve-vendor-performance-for-a-specific-date)
 
-1. [Introduction](#1-introduction)
-2. [User Authentication](#2-user-authentication)
-   - [2.1. User Signup](#21-user-signup)
-   - [2.2. User Login](#22-user-login)
-   - [2.3. User Logout](#23-user-logout)
-3. [Vendor Management](#3-vendor-management)
-   - [3.1. Retrieve All Vendors](#31-retrieve-all-vendors)
-   - [3.2. Retrieve a Specific Vendor](#32-retrieve-a-specific-vendor)
-   - [3.3. Create a New Vendor](#33-create-a-new-vendor)
-   - [3.4. Update a Vendor](#34-update-a-vendor)
-   - [3.5. Delete a Vendor](#35-delete-a-vendor)
-4. [Purchase Order Management](#4-purchase-order-management)
-   - [4.1. Retrieve All Purchase Orders](#41-retrieve-all-purchase-orders)
-   - [4.2. Retrieve a Specific Purchase Order](#42-retrieve-a-specific-purchase-order)
-   - [4.3. Create a New Purchase Order](#43-create-a-new-purchase-order)
-   - [4.4. Update a Purchase Order](#44-update-a-purchase-order)
-   - [4.5. Delete a Purchase Order](#45-delete-a-purchase-order)
-   - [4.6. Acknowledge a Purchase Order](#46-acknowledge-a-purchase-order)
-   - [4.7. Update Delivery Status](#47-update-delivery-status)
-5. [Vendor Performance](#5-vendor-performance)
-   - [5.1. Retrieve Vendor Performance](#51-retrieve-vendor-performance)
-   - [5.2. Retrieve Vendor Performance for a Specific Date](#52-retrieve-vendor-performance-for-a-specific-date)
 
-## 1. Introduction
+## Introduction
+Brief Introduction of project
 
-Provide a brief introduction to the project, its purpose, and any relevant information.
 
-## 2. User Authentication
 
-### 2.1. User Signup
 
-Brief description of user signup functionality.
 
-### 2.2. User Login
+## 1. User Authentication
 
-Brief description of user login functionality.
+### 1.1. User Signup
 
-### 2.3. User Logout
+- **Endpoint:** `/api/signup/`
+- **Method:** `POST`
+- **Description:** Allows users to register by providing necessary information.
+- **Parameters:**
+  - `email` (string, required): Email address of the user.
+  - `password` (string, required): Password for the user account.
+- **Response:**
+  - 201 Created: User registration successful.
+  - 400 Bad Request: If input data is invalid.
 
-Brief description of user logout functionality.
+### 1.2. User Login
 
-## 3. Vendor Management
+- **Endpoint:** `/api/login/`
+- **Method:** `POST`
+- **Description:** Allows users to log in and obtain authentication tokens.
+- **Parameters:**
+  - `email` (string, required): Email address of the user.
+  - `password` (string, required): Password for the user account.
+- **Response:**
+  - 200 OK: Login successful. Returns access and refresh tokens.
+  - 404 Not Found: If login credentials are invalid.
 
-### 3.1. Retrieve All Vendors
+### 1.3. User Logout
 
-Brief description of retrieving all vendors functionality.
+- **Endpoint:** `/api/logout/`
+- **Method:** `GET`
+- **Description:** Logs out the currently authenticated user and invalidates tokens.
+- **Response:**
+  - 200 OK: Logout successful.
 
-### 3.2. Retrieve a Specific Vendor
+## 2. Vendor Management
 
-Brief description of retrieving a specific vendor functionality.
+### 2.1. Retrieve All Vendors
 
-### 3.3. Create a New Vendor
+- **Endpoint:** `/api/vendors/`
+- **Method:** `GET`
+- **Description:** Retrieves a list of all vendors.
+- **Response:** Returns JSON data containing information about all vendors.
 
-Brief description of creating a new vendor functionality.
+### 2.2. Retrieve a Specific Vendor
 
-### 3.4. Update a Vendor
+- **Endpoint:** `/api/vendors/<int:id>/`
+- **Method:** `GET`
+- **Description:** Retrieves details of a specific vendor identified by ID.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the vendor.
+- **Response:** Returns JSON data containing information about the vendor.
 
-Brief description of updating a vendor functionality.
+### 2.3. Create a New Vendor
 
-### 3.5. Delete a Vendor
+- **Endpoint:** `/api/vendors/`
+- **Method:** `POST`
+- **Description:** Allows authorized users to create a new vendor.
+- **Parameters:** Provide vendor details in the request body.
+- **Response:** Returns JSON data containing details of the newly created vendor.
 
-Brief description of deleting a vendor functionality.
+### 2.4. Update a Vendor
 
-## 4. Purchase Order Management
+- **Endpoint:** `/api/vendors/<int:id>/`
+- **Method:** `PUT`
+- **Description:** Allows authorized users to update details of an existing vendor.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the vendor to be updated.
+- **Response:** Returns JSON data containing updated details of the vendor.
 
-### 4.1. Retrieve All Purchase Orders
+### 2.5. Delete a Vendor
 
-Brief description of retrieving all purchase orders functionality.
+- **Endpoint:** `/api/vendors/<int:id>/`
+- **Method:** `DELETE`
+- **Description:** Allows authorized users to delete a vendor.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the vendor to be deleted.
+- **Response:** Returns confirmation message upon successful deletion.
 
-### 4.2. Retrieve a Specific Purchase Order
+## 3. Purchase Order Management
 
-Brief description of retrieving a specific purchase order functionality.
+### 3.1. Retrieve All Purchase Orders
 
-### 4.3. Create a New Purchase Order
+- **Endpoint:** `/api/purchase_orders/`
+- **Method:** `GET`
+- **Description:** Retrieves a list of all purchase orders.
+- **Response:** Returns JSON data containing information about all purchase orders.
 
-Brief description of creating a new purchase order functionality.
+### 3.2. Retrieve a Specific Purchase Order
 
-### 4.4. Update a Purchase Order
+- **Endpoint:** `/api/purchase_orders/<int:id>/`
+- **Method:** `GET`
+- **Description:** Retrieves details of a specific purchase order identified by ID.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the purchase order.
+- **Response:** Returns JSON data containing information about the purchase order.
 
-Brief description of updating a purchase order functionality.
+### 3.3. Create a New Purchase Order
 
-### 4.5. Delete a Purchase Order
+- **Endpoint:** `/api/purchase_orders/`
+- **Method:** `POST`
+- **Description:** Allows authorized users to create a new purchase order.
+- **Parameters:** Provide purchase order details in the request body.
+- **Response:** Returns JSON data containing details of the newly created purchase order.
 
-Brief description of deleting a purchase order functionality.
+### 3.4. Update a Purchase Order
 
-### 4.6. Acknowledge a Purchase Order
+- **Endpoint:** `/api/purchase_orders/<int:id>/`
+- **Method:** `PUT`
+- **Description:** Allows authorized users to update details of an existing purchase order.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the purchase order to be updated.
+- **Response:** Returns JSON data containing updated details of the purchase order.
 
-Brief description of acknowledging a purchase order functionality.
+### 3.5. Delete a Purchase Order
 
-### 4.7. Update Delivery Status
+- **Endpoint:** `/api/purchase_orders/<int:id>/`
+- **Method:** `DELETE`
+- **Description:** Allows authorized users to delete a purchase order.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the purchase order to be deleted.
+- **Response:** Returns confirmation message upon successful deletion.
 
-Brief description of updating delivery status functionality.
+### 3.6. Acknowledge a Purchase Order
 
-## 5. Vendor Performance
+- **Endpoint:** `/api/purchase_orders/<int:id>/acknowledge/`
+- **Method:** `GET`
+- **Description:** Allows vendors to acknowledge receipt of a purchase order.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the purchase order to be acknowledged.
+- **Response:** Returns JSON data confirming the acknowledgment.
 
-### 5.1. Retrieve Vendor Performance
+### 3.7. Update Delivery Status
 
-Brief description of retrieving vendor performance functionality.
+- **Endpoint:** `/api/status/<int:id>/<str:status>/`
+- **Method:** `GET`
+- **Description:** Allows updating the delivery status of a purchase order.
+- **Parameters:**
+  - `id` (integer, required): Unique identifier of the purchase order.
+  - `status` (string, required): New status of the purchase order (delivered or cancelled).
+- **Response:** Returns JSON data containing updated details of the purchase order.
 
-### 5.2. Retrieve Vendor Performance for a Specific Date
+## 4. Vendor Performance
 
-Brief description of retrieving vendor performance for a specific date functionality.
+### 4.1. Retrieve Vendor Performance
 
-## Installation
+- **Endpoint:** `/api/vendors/<int:vendor_id>/performance/`
+- **Method:** `GET`
+- **Description:** Retrieves performance metrics for a specific vendor.
+- **Parameters:**
+  - `vendor_id` (integer, required): Unique identifier of the vendor.
+- **Response:** Returns JSON data containing performance metrics.
 
-Provide instructions for installing and setting up the project. Include any dependencies or environment setup.
+### 4.2. Retrieve Vendor Performance for a Specific Date
 
-## Usage
-
-Provide examples or instructions for using the project. Include any important details or considerations.
-
-## Contributing
-
-Guidelines for contributing to the project. This may include information on how to submit bug reports, feature requests, or code contributions.
-
-## License
-
-Information about the project's license.
-
-## Acknowledgements
-
-Any acknowledgements or credits to individuals or organizations that contributed to the project.
-
-## Support
-
-Contact information for getting support or assistance with the project.
-
+- **Endpoint:** `/api/vendors/<int:vendor_id>/performance/<str:date>/`
+- **Method:** `GET`
+- **Description:** Retrieves performance metrics for a specific vendor on a given date.
+- **Parameters:**
+  - `vendor_id` (integer, required): Unique identifier of the vendor.
+  - `date` (string, required): Date for which performance metrics are requested (format: YYYY-MM-DD).
+- **Response:** Returns JSON data containing performance metrics for the specified date.
