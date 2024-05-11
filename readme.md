@@ -1,9 +1,45 @@
-# API Endpoints README
+# Vendor Management System
+
+## Installation and Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/staufique/Vendor_Management_System.git
+
+2. Install all requirement package
+  ```bash
+  pip install -r requirements.txt
+
+3. Setup smtp for sending mails to vendors in settings.py file
+  go to settings and change these variables
+
+  `DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
+  `EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
+  `EMAIL_HOST = 'smtp.gmail.com'`
+  `EMAIL_PORT = 587`
+  `EMAIL_USE_TLS = True`
+  `EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
+  `EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
+
+4. In models file add your email in `notify_vendor()` and `notify_to_vendor_for_status_updating()` functions.
+
+### Note:
+    If you dosn't require to send email to vendors please comment these following lines in settings.py
+    `# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
+    `# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
+    `# EMAIL_HOST = 'smtp.gmail.com'`
+    `# EMAIL_PORT = 587`
+    `# EMAIL_USE_TLS = True`
+    `# EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
+    `# EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
+
+    and comment these two functions in models.py file
+     `# notify_vendor()` and `# notify_to_vendor_for_status_updating()`
 
 This document outlines the API endpoints available in the system along with their functionalities and usage instructions.
 
 ## Table of Contents
-[Introduction](#Introduction)
+
 1. [User Authentication](#1-user-authentication)
    - [1.1. User Signup](#11-user-signup)
    - [1.2. User Login](#12-user-login)
@@ -94,6 +130,7 @@ Brief Introduction of project
 - **Description:** Allows authorized users to create a new vendor.
 - **Parameters:** Provide vendor details in the request body.
 - **Response:** Returns JSON data containing details of the newly created vendor.
+- **Note:** Only Superuser can Create a New Vendor
 
 ### 2.4. Update a Vendor
 
@@ -103,6 +140,7 @@ Brief Introduction of project
 - **Parameters:**
   - `id` (integer, required): Unique identifier of the vendor to be updated.
 - **Response:** Returns JSON data containing updated details of the vendor.
+- **Note:** Only Superuser can Update a Vendor
 
 ### 2.5. Delete a Vendor
 
@@ -112,6 +150,7 @@ Brief Introduction of project
 - **Parameters:**
   - `id` (integer, required): Unique identifier of the vendor to be deleted.
 - **Response:** Returns confirmation message upon successful deletion.
+- **Note:** Only Superuser can Delete a Vendor
 
 ## 3. Purchase Order Management
 
@@ -138,6 +177,7 @@ Brief Introduction of project
 - **Description:** Allows authorized users to create a new purchase order.
 - **Parameters:** Provide purchase order details in the request body.
 - **Response:** Returns JSON data containing details of the newly created purchase order.
+- **Note:** If Purchase Order Created Vendor Will Get an mail for acknowledge the order.
 
 ### 3.4. Update a Purchase Order
 
@@ -165,6 +205,7 @@ Brief Introduction of project
 - **Parameters:**
   - `id` (integer, required): Unique identifier of the purchase order to be acknowledged.
 - **Response:** Returns JSON data confirming the acknowledgment.
+- **Note:** After Acknowledgement vendor will get an another mail to update the status of an order.
 
 ### 3.7. Update Delivery Status
 

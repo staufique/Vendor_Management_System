@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -123,14 +124,16 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+load_dotenv()
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'programswar@gmail.com'  # Your Gmail email address
-EMAIL_HOST_PASSWORD = 'jklp xorq leml xklj'  # Your Gmail password or app-specific password
+EMAIL_HOST_USER = os.getenv('EMAIL_ID')  # Your Gmail email address
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')  # Your Gmail password or app-specific password
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

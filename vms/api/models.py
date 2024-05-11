@@ -16,6 +16,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+import os
+from dotenv import load_dotenv
 
 class Vendor(models.Model):
     name = models.CharField(max_length=150)
@@ -81,7 +83,7 @@ def notify_vendor(sender, instance, created, **kwargs):
         # Compose email content
         subject = 'New Purchase Order Notification'
         html_content = render_to_string('purchase_order_notification_email.html', {'purchase_order': instance})
-        from_email = 'programswar@gmail.com'  # Use your own email address
+        from_email = os.getenv('EMAIL_ID')  # Use your own email address
         to_email = instance.vendor.email  # Assuming contact_details contain the vendor's email address
 
         # Create EmailMessage object
@@ -98,7 +100,7 @@ def notify_to_vendor_for_status_updating(sender, instance, **kwargs):
     if purchase_orders.exists():
         subject = 'Update Purchase Order'
         html_content = render_to_string('update_order_status.html', {'purchase_order': instance})
-        from_email = 'programswar@gmail.com'  # Use your own email address
+        from_email = os.getenv('EMAIL_ID')  # Use your own email address
         to_email = instance.vendor.email  # Assuming contact_details contain the vendor's email address
 
         # Create EmailMessage object
