@@ -7,8 +7,8 @@
    git clone https://github.com/staufique/Vendor_Management_System.git
 
 2. Install all requirement package
-  ```bash
-  pip install -r requirements.txt
+   ```bash
+   pip install -r requirements.txt
 
 3. Setup smtp for sending mails to vendors in settings.py file
   go to settings and change these variables
