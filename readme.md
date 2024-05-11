@@ -13,25 +13,25 @@
 3. Setup smtp for sending mails to vendors in settings.py file
   go to settings and change these variables
 
-  `DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
-  `EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
-  `EMAIL_HOST = 'smtp.gmail.com'`
-  `EMAIL_PORT = 587`
-  `EMAIL_USE_TLS = True`
-  `EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
-  `EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
+  - `DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
+  - `EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
+  - `EMAIL_HOST = 'smtp.gmail.com'`
+  - `EMAIL_PORT = 587`
+  - `EMAIL_USE_TLS = True`
+  - `EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
+  - `EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
 
 4. In models file add your email in `notify_vendor()` and `notify_to_vendor_for_status_updating()` functions.
 
 ### Note:
-    If you dosn't require to send email to vendors please comment these following lines in settings.py
-    `# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
-    `# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
-    `# EMAIL_HOST = 'smtp.gmail.com'`
-    `# EMAIL_PORT = 587`
-    `# EMAIL_USE_TLS = True`
-    `# EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
-    `# EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
+  If you dosn't require to send email to vendors please comment these following lines in settings.py
+  - `# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'`
+  - `# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`
+  - `# EMAIL_HOST = 'smtp.gmail.com'`
+  - `# EMAIL_PORT = 587`
+  - `# EMAIL_USE_TLS = True`
+  - `# EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
+  - `# EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
 
     and comment these two functions in models.py file
      `# notify_vendor()` and `# notify_to_vendor_for_status_updating()`
