@@ -228,6 +228,7 @@ Brief Introduction of project
   - `vendor_id` (integer, required): Unique identifier of the vendor.
 - **Response:** Returns JSON data containing performance metrics.
 
+
 ### 4.2. Retrieve Vendor Performance for a Specific Date
 
 - **Endpoint:** `/api/vendors/<int:vendor_id>/performance/<str:date>/`

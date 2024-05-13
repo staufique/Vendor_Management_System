@@ -234,8 +234,6 @@ class VendorPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, vendor_id, date=None):
-        if not request.user.is_superuser:
-            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         vendor = Vendor.objects.filter(id=vendor_id).first()
         if vendor is None:
             return JsonResponse({"error": "Vendor not found"}, status=404)
