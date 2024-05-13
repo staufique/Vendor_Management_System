@@ -7,18 +7,15 @@ from django.utils import timezone
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
 from datetime import timedelta
-from django.core.mail import send_mail
-from django.template.loader import render_to_string,get_template
-import json
+from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Avg, F, ExpressionWrapper, fields
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
 import os
 from dotenv import load_dotenv
+load_dotenv()
 
+from django.contrib.auth.models import User
 class Vendor(models.Model):
     name = models.CharField(max_length=150)
     contact_details = models.TextField(max_length=250)
@@ -32,10 +29,12 @@ class Vendor(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
         
 
 class PurchaseOrder(models.Model):
     po_number = models.CharField(max_length=100,unique=True)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE)
     order_date = models.DateTimeField(default=timezone.now)
     delivery_date = models.DateTimeField(default=timezone.now()+timedelta(days=7))
@@ -102,6 +101,24 @@ def notify_to_vendor_for_status_updating(sender, instance, **kwargs):
         html_content = render_to_string('update_order_status.html', {'purchase_order': instance})
         from_email = os.getenv('EMAIL_ID')  # Use your own email address
         to_email = instance.vendor.email  # Assuming contact_details contain the vendor's email address
+
+        # Create EmailMessage object
+        email = EmailMessage(subject, html_content, from_email, [to_email])
+        email.content_subtype = 'html'  # Set email content type as HTML
+        # Send email
+        email.send()
+
+
+@receiver(post_save, sender=PurchaseOrder)
+def notify_buyer(sender, instance, **kwargs):
+    vendor = instance.vendor
+    user_id = instance.user_id
+    purchase_orders = PurchaseOrder.objects.filter(vendor=vendor, po_number=instance.po_number,acknowledgement_date__isnull=False)
+    if purchase_orders.exists():
+        subject = 'Order Updates'
+        html_content = render_to_string('track_order.html', {'purchase_order': instance})
+        from_email = os.getenv('EMAIL_ID')  # Use your own email address
+        to_email = instance.user_id.email  # Assuming contact_details contain the vendor's email address
 
         # Create EmailMessage object
         email = EmailMessage(subject, html_content, from_email, [to_email])

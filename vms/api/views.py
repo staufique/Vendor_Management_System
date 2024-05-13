@@ -80,6 +80,7 @@ class CustomTokenAuthentication(BaseAuthentication):
             raise AuthenticationFailed('Invalid access token')
         except User.DoesNotExist:
             raise AuthenticationFailed('User not found')
+      
         
 class UserLogoutView(APIView):
     authentication_classes = [CustomTokenAuthentication]
@@ -155,7 +156,9 @@ class PurchaseOrderView(APIView):
         return JsonResponse(serializer.data,safe=False)
     
     def post(self,request):
-        serializer = PurchaseOrderSerializer(data=request.data)
+        data = request.data
+        data['user_id'] = request.user.id
+        serializer = PurchaseOrderSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data,safe=False)
@@ -190,14 +193,25 @@ class AcknowledgeView(APIView):
             po_id.acknowledgement_date = timezone.now()
             serializer = PurchaseOrderSerializer(po_id,data=po_id)
             po_id.save()
+            if po_id.acknowledgement_date:
+                delivery_date = request.data.get("expected_date",timezone.now()+timedelta(days=7))
+                delivery_date = datetime.strptime(delivery_date,'%Y-%m-%d').date()
+                if delivery_date < po_id.order_date.date():
+                    return JsonResponse({"msg":"please provide valid expected date"})
+                po_id.delivery_date = delivery_date
+                po_id.save()
             serializer = PurchaseOrderSerializer(po_id)
             return JsonResponse(serializer.data)
-        
         return JsonResponse("order not found",safe=False)
 
 class DeliverView(APIView):
-
     def get(self,request,id,status):
+        try:
+            if request.user.vendor_code is None:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            raise AuthenticationFailed('User not found')
+        
         if status=="delivered":
             data = PurchaseOrder.objects.filter(id=id).first()
             if data.acknowledgement_date is None:
@@ -220,10 +234,12 @@ class VendorPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, vendor_id, date=None):
+        if not request.user.is_superuser:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         vendor = Vendor.objects.filter(id=vendor_id).first()
         if vendor is None:
             return JsonResponse({"error": "Vendor not found"}, status=404)
-        
+    
         performances = HistoricalPerformance.objects.filter(vendor=vendor)
         
         if date:

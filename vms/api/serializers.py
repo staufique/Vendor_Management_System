@@ -24,7 +24,7 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
     quantity = serializers.IntegerField(required=False)
     class Meta:
         model = PurchaseOrder
-        fields = ['po_number', 'quantity','vendor','items','quality_rating']
+        fields = ['po_number', 'user_id','quantity','vendor','items','quality_rating']
 
     def validate_quality_rating(self, value):
         if value > 5.0 or value < 0.0:

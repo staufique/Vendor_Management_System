@@ -22,27 +22,13 @@
     </style>
 </head>
 <body>
-    <p>Dear {{ purchase_order.vendor.name }},</p>
+    <p>Dear {{ purchase_order.user_id }},</p>
     <p>A new purchase order ({{ purchase_order.po_number }}) has been created.</p>
-    <p>Here is Customer details</p>
-    <table border="1">
-            
-        <tr>
-            <th>Name</th>
-            <th>Contact Details</th>
-        </tr>
-        <tr>
-            <td>{{purchase_order.user_id.name}}</td>
-            <td>{{purchase_order.user_id.email}}</td>
-        </tr>
-        
-    </table>
     <p>
         here is the list of the items
     </p>
     <div>
         <table border="1">
-            
             <tr>
                 <th>Item Name</th>
                 <th>Quantity</th>
@@ -55,8 +41,8 @@
             {% endfor %}
         </table>
     </div>
-    <p>Please acknowledge the purchase order as soon as possible.</p>
-    <a href="http://localhost:8000/api/purchase_orders/{{purchase_order.id}}/acknowledge/">click here to acknowledge</a>
+    <p>Track Your Order Status by clicking here.</p>
+    <a href="http://localhost:8000/api/purchase_orders/{{purchase_order.id}}/">click here to Track your order</a>
     <p>Thank you.</p>
 </body>
 </html>

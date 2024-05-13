@@ -10,7 +10,7 @@ class VendorAdmin(admin.ModelAdmin):
     
 @admin.register(PurchaseOrder)
 class PurchaseOrderAdmin(admin.ModelAdmin):
-    list_display = ['id','po_number','vendor','order_date','delivery_date',
+    list_display = ['id','user_id','po_number','vendor','order_date','delivery_date',
                     'items','quantity','status','quality_rating',
                     'issue_date','acknowledgement_date']
     

@@ -21,7 +21,7 @@
   - `EMAIL_HOST_USER = 'your_email'`  # Your Gmail email address
   - `EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
 
-4. In models file add your email in `notify_vendor()` and `notify_to_vendor_for_status_updating()` functions.
+4. In models file change `from_email = os.getenv('EMAIL_ID')` with your email id in these functions `notify_vendor()`, `notify_to_vendor_for_status_updating()` and `notify_buyer()`.
 
 ### Note:
   If you dosn't require to send email to vendors please comment these following lines in settings.py
@@ -34,7 +34,7 @@
   - `# EMAIL_HOST_PASSWORD = 'your_password'`  # Your Gmail password or app-specific password
 
     and comment these two functions in models.py file
-     `# notify_vendor()` and `# notify_to_vendor_for_status_updating()`
+     `# notify_vendor()`, `# notify_to_vendor_for_status_updating()` and `notify_buyer()`.
 
 This document outlines the API endpoints available in the system along with their functionalities and usage instructions.
 
